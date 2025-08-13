@@ -8,15 +8,19 @@ WORKDIR /backend
 
 COPY package.json .
 
-#install app dependcies 
-RUN npm up &&  npm i && \
+# install app dependencies
+RUN npm up && npm i && \
   npm install express mysql cors nodemon
 
-COPY . . 
- 
+# Install nodemon globally
+RUN npm install -g nodemon
+
+COPY . .
+
 RUN chmod +x ./node_modules/.bin/nodemon
 
 EXPOSE 8081
 #EXPOSE 3306
 
-CMD [ "npm","start" ]
+CMD [ "npm", "start" ]
+
