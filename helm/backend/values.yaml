@@ -11,9 +11,11 @@ backend:
     port: 5000
 
 database:
-  host: mysql.sql.svc.cluster.local
+  host: mysql
   port: 3306
   name: tododb
   secretName: db-secret
+  username: root
+  password: b21hcjEyMzQ=  # base64 for 'omar1234'
 
 namespace: backend

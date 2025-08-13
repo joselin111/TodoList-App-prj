@@ -3,6 +3,16 @@ kind: Namespace
 metadata:
   name: {{ .Values.namespace }}
 ---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.database.secretName }}
+  namespace: {{ .Values.namespace }}
+type: Opaque
+data:
+  db-username: {{ .Values.database.username }}
+  db-password: {{ .Values.database.password }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
