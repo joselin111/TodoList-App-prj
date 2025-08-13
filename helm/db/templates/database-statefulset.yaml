@@ -11,7 +11,6 @@ metadata:
 type: Opaque
 data:
   mysql-root-pass: {{ .Values.database.rootPassword }}
-
 ---
 apiVersion: v1
 kind: Service
@@ -29,29 +28,15 @@ spec:
   selector:
     app: {{ .Values.app }}
     tier: {{ .Values.database.tier }}
-
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
   name: {{ .Values.database.pvc.storageClass }}
-provisioner: k8s.io/minikube-hostpath
+provisioner: docker.io/hostpath
+volumeBindingMode: Immediate
 parameters:
   type: pd-ssd
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.database.pvc.name }}
-  namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.database.pvc.storageClass }}
-  accessModes: [ "ReadWriteOnce" ]
-  resources:
-    requests:
-      storage: {{ .Values.database.pvc.storageSize }}
-
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -62,7 +47,7 @@ metadata:
     app: {{ .Values.app }}
     tier: {{ .Values.database.tier }}
 spec:
-  serviceName: {{ .Values.database.name }}
+  serviceName: {{ .Values.database.service.name }}
   replicas: 1
   selector:
     matchLabels:
@@ -87,9 +72,14 @@ spec:
                   name: {{ .Values.database.secretName }}
                   key: mysql-root-pass
           volumeMounts:
-            - name: mysql-vol
+            - name: mysql-storage
               mountPath: /var/lib/mysql
-      volumes:
-        - name: mysql-vol
-          persistentVolumeClaim:
-            claimName: {{ .Values.database.pvc.name }}
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.database.pvc.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.database.pvc.storageSize }}
