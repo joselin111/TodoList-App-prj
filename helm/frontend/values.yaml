@@ -11,4 +11,4 @@ frontend:
     port: 3000
     nodePort: 30000
 
-namespace: frontend
+namespace: backend
