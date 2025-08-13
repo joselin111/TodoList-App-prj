@@ -3,9 +3,7 @@ app: todolist-app
 database:
   name: mysql
   tier: database
-  image:
-    repository: omartarekabdelall/todo-list-app
-    tag: mysql
+  image: joselin721/database
   containerPort: 3306
   service:
     name: mysql

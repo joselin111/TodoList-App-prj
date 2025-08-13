@@ -67,7 +67,7 @@ spec:
     spec:
       containers:
         - name: mysql-container
-          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          image: "{ .Values.database.image }"
           ports:
             - containerPort: {{ .Values.database.containerPort }}
               name: mysql-port
