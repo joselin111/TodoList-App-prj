@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.backend.name }}
+  labels:
+    app: {{ .Values.app }}
+    tier: backend
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app }}
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+        tier: backend
+    spec:
+      containers:
+        - name: backend-container
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.backend.containerPort }}
+          env:
+            - name: DB_HOST
+              value: {{ .Values.database.host }}
+            - name: DB_PORT
+              value: "{{ .Values.database.port }}"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secretName }}
+                  key: db-username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secretName }}
+                  key: db-password
+            - name: DB_NAME
+              value: {{ .Values.database.name }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.backend.service.name }}
+  labels:
+    app: {{ .Values.app }}
+    tier: backend
+spec:
+  type: {{ .Values.backend.service.type }}
+  ports:
+    - port: {{ .Values.backend.service.port }}
+      targetPort: {{ .Values.backend.containerPort }}
+      protocol: TCP
+  selector:
+    app: {{ .Values.app }}
+    tier: backend

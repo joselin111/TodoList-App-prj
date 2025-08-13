@@ -1,0 +1,19 @@
+app: todolist-app
+
+backend:
+  name: backend
+  replicas: 1
+  image:
+    repository: omartarekabdelall/todo-list-app
+    tag: backend-78
+  containerPort: 5000
+  service:
+    name: backend-svc
+    type: ClusterIP
+    port: 5000
+
+database:
+  host: database
+  port: 3306
+  name: tododb
+  secretName: db-secret

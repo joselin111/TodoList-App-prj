@@ -1,0 +1,20 @@
+app: todolist-app
+
+database:
+  name: mysql
+  tier: database
+  image:
+    repository: omartarekabdelall/todo-list-app
+    tag: mysql
+  containerPort: 3306
+  service:
+    name: mysql
+    port: 3306
+    clusterIP: None
+  pvc:
+    name: mysql-pvc
+    storageClass: fast
+    storageSize: 1Gi
+  secretName: mysql-secret
+  rootPassword: b21hcjEyMzQ=  # base64 for 'omar1234'
+

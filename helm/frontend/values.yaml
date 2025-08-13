@@ -1,0 +1,14 @@
+app: todolist-app
+
+frontend:
+  name: frontend
+  replicas: 1
+  image:
+    repository: omartarekabdelall/todo-list-app
+    tag: frontend-78
+  containerPort: 3000
+  service:
+    name: frontend-svc
+    type: NodePort
+    port: 3000
+    nodePort: 30000
