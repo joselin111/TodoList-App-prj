@@ -15,3 +15,5 @@ database:
   port: 3306
   name: tododb
   secretName: db-secret
+
+namespace: backend

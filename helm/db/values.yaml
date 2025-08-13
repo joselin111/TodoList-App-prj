@@ -16,3 +16,4 @@ database:
   secretName: mysql-secret
   rootPassword: b21hcjEyMzQ=  # base64 for 'omar1234'
 
+namespace: sql
