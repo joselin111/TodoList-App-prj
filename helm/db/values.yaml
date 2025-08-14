@@ -9,10 +9,10 @@ database:
   service:
     name: mysql
     port: 3306
-    clusterIP: None
+    clusterIP: None           # headless ok for StatefulSet
   pvc:
     name: mysql-pvc
     storageClass: fast
     storageSize: 1Gi
   secretName: mysql-secret
-  rootPassword: b21hcjEyMzQ=  # base64 for 'omar1234'
+  rootPassword: b21hcjEyMzQ=  # base64('omar1234')
