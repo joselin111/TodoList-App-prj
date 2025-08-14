@@ -5,17 +5,19 @@ backend:
   name: backend
   replicas: 1
   image: joselin721/backend
-  containerPort: 5000
+  # Match the log: "Listening on port 8081"
+  containerPort: 8081
   service:
     name: backend-svc
     type: ClusterIP
-    port: 5000
+    port: 8081   # make service port and containerPort consistent
 
 database:
-  host: mysql
+  host: mysql                 # service name in sql ns
   namespace: sql
   port: 3306
   name: tododb
   secretName: db-secret
-  username: cm9vdA==   # base64 for 'root'
-  password: b21hcjEyMzQ=  # base64 for 'omar1234'
+  # secrets must be base64 in Secret .data
+  username: cm9vdA==          # base64('root')
+  password: b21hcjEyMzQ=      # base64('omar1234')
