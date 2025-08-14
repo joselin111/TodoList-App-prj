@@ -1,4 +1,5 @@
 app: todolist-app
+namespace: backend
 
 backend:
   name: backend
@@ -12,10 +13,9 @@ backend:
 
 database:
   host: mysql
+  namespace: sql
   port: 3306
   name: tododb
   secretName: db-secret
-  username: root
+  username: cm9vdA==   # base64 for 'root'
   password: b21hcjEyMzQ=  # base64 for 'omar1234'
-
-namespace: backend
