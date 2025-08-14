@@ -40,7 +40,7 @@ spec:
             - containerPort: {{ .Values.backend.containerPort }}
           env:
             - name: DB_HOST
-              value: {{ .Values.database.host }}
+              value: "{{ .Values.database.host }}.{{ .Values.database.namespace }}.svc.cluster.local"
             - name: DB_PORT
               value: "{{ .Values.database.port }}"
             - name: DB_USER
@@ -55,7 +55,6 @@ spec:
                   key: db-password
             - name: DB_NAME
               value: {{ .Values.database.name }}
-
 ---
 apiVersion: v1
 kind: Service
