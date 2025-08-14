@@ -1,55 +1,52 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.namespace }}
+  name: frontend
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.frontend.name }}
-  namespace: {{ .Values.namespace }}
+  name: frontend
+  namespace: frontend
   labels:
-    app: {{ .Values.app }}
+    app: todolist-app
     tier: frontend
 spec:
-  replicas: {{ .Values.frontend.replicas }}
+  replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.app }}
+      app: todolist-app
       tier: frontend
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
+        app: todolist-app
         tier: frontend
     spec:
       containers:
         - name: frontend-container
-          image: "{{ .Values.frontend.image }}"
+          image: joselin721/frontend
           ports:
-            - containerPort: {{ .Values.frontend.containerPort }}
+            - containerPort: 4173
           env:
-            # Adjust the var name to what your frontend expects (e.g., VITE_API_URL / REACT_APP_API_URL)
             - name: BACKEND_URL
-              value: "http://{{ .Values.backend.service.name }}.{{ .Values.backend.namespace }}.svc.cluster.local:{{ .Values.backend.service.port }}"
+              value: "http://backend-svc.backend.svc.cluster.local:8081"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.frontend.service.name }}
-  namespace: {{ .Values.namespace }}
+  name: frontend-svc
+  namespace: frontend
   labels:
-    app: {{ .Values.app }}
+    app: todolist-app
     tier: frontend
 spec:
-  type: {{ .Values.frontend.service.type }}
+  type: NodePort
   selector:
-    app: {{ .Values.app }}
+    app: todolist-app
     tier: frontend
   ports:
     - protocol: TCP
-      port: {{ .Values.frontend.service.port }}        # 3000 (external cluster port)
-      targetPort: {{ .Values.frontend.containerPort }} # 4173 (matches pod log)
-      {{- if eq .Values.frontend.service.type "NodePort" }}
-      nodePort: {{ .Values.frontend.service.nodePort }} # 30000
-      {{- end }}
+      port: 3000
+      targetPort: 4173
+      nodePort: 30000
