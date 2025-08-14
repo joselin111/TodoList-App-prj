@@ -1,38 +1,38 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .Values.namespace }}
+  name: sql
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.database.secretName }}
-  namespace: {{ .Values.namespace }}
+  name: mysql-secret
+  namespace: sql
 type: Opaque
 data:
-  mysql-root-pass: {{ .Values.database.rootPassword }}
+  mysql-root-pass: b21hcjEyMzQ=  # base64('omar1234')
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.database.service.name }}
-  namespace: {{ .Values.namespace }}
+  name: mysql
+  namespace: sql
   labels:
-    app: {{ .Values.app }}
-    tier: {{ .Values.database.tier }}
+    app: todolist-app
+    tier: database
 spec:
-  clusterIP: {{ .Values.database.service.clusterIP }}
+  clusterIP: None
   ports:
-    - port: {{ .Values.database.service.port }}
-      targetPort: {{ .Values.database.containerPort }}
+    - port: 3306
+      targetPort: 3306
   selector:
-    app: {{ .Values.app }}
-    tier: {{ .Values.database.tier }}
+    app: todolist-app
+    tier: database
 ---
 kind: StorageClass
 apiVersion: storage.k8s.io/v1
 metadata:
-  name: {{ .Values.database.pvc.storageClass }}
+  name: fast
 provisioner: docker.io/hostpath
 volumeBindingMode: Immediate
 parameters:
@@ -41,35 +41,34 @@ parameters:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.database.name }}-statefulset
-  namespace: {{ .Values.namespace }}
+  name: mysql-statefulset
+  namespace: sql
   labels:
-    app: {{ .Values.app }}
-    tier: {{ .Values.database.tier }}
+    app: todolist-app
+    tier: database
 spec:
-  serviceName: {{ .Values.database.service.name }}
+  serviceName: mysql
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.app }}
-      tier: {{ .Values.database.tier }}
+      app: todolist-app
+      tier: database
   template:
     metadata:
       labels:
-        app: {{ .Values.app }}
-        tier: {{ .Values.database.tier }}
+        app: todolist-app
+        tier: database
     spec:
       containers:
         - name: mysql-container
-          image: "{{ .Values.database.image }}"
+          image: joselin721/database
           ports:
-            - containerPort: {{ .Values.database.containerPort }}
-              name: mysql-port
+            - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.database.secretName }}
+                  name: mysql-secret
                   key: mysql-root-pass
           volumeMounts:
             - name: mysql-storage
@@ -79,7 +78,7 @@ spec:
         name: mysql-storage
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: {{ .Values.database.pvc.storageClass }}
+        storageClassName: fast
         resources:
           requests:
-            storage: {{ .Values.database.pvc.storageSize }}
+            storage: 1Gi
