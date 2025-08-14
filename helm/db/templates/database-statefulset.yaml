@@ -21,7 +21,7 @@ metadata:
     app: todolist-app
     tier: database
 spec:
-  clusterIP: None
+  clusterIP: None           # Headless for StatefulSet
   ports:
     - port: 3306
       targetPort: 3306
