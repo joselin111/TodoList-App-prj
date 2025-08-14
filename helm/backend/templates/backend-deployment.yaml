@@ -54,7 +54,7 @@ spec:
                   name: db-secret
                   key: db-password
             - name: DB_NAME
-              value: todolist_db
+              value: tododb
 ---
 apiVersion: v1
 kind: Service
