@@ -28,6 +28,9 @@ spec:
           image: "{{ .Values.frontend.image }}"
           ports:
             - containerPort: {{ .Values.frontend.containerPort }}
+          env:
+            - name: BACKEND_URL
+              value: "http://{{ .Values.backend.service.name }}.{{ .Values.backend.namespace }}.svc.cluster.local:{{ .Values.backend.service.port }}"
 ---
 apiVersion: v1
 kind: Service
