@@ -37,7 +37,7 @@ spec:
         - name: backend-container
           image: "{{ .Values.backend.image }}"
           ports:
-            - containerPort: {{ .Values.backend.containerPort }}
+            - containerPort: {{ .Values.backend.containerPort }}  # 8081
           env:
             - name: DB_HOST
               value: "{{ .Values.database.host }}.{{ .Values.database.namespace }}.svc.cluster.local"
@@ -71,5 +71,5 @@ spec:
     tier: backend
   ports:
     - protocol: TCP
-      port: {{ .Values.backend.service.port }}
-      targetPort: {{ .Values.backend.containerPort }}
+      port: {{ .Values.backend.service.port }}            # 8081
+      targetPort: {{ .Values.backend.containerPort }}     # 8081
